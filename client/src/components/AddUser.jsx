@@ -2,13 +2,15 @@ import React from 'react';
 
 const AddUser = props => {
   return (
-    <form action="">
+    <form onSubmit={event => props.addUser(event)}>
       <div className="form-group">
         <input
           type="text"
           name="username"
           className="form-control input-lg"
           placeholder="Enter a username"
+          value={props.username}
+          onChange={event => props.handleChange(event)}
           required
         />
       </div>
@@ -19,6 +21,8 @@ const AddUser = props => {
           name="email"
           className="form-control input-lg"
           placeholder="Enter an email"
+          value={props.email}
+          onChange={event => props.handleChange(event)}
           required
         />
       </div>
