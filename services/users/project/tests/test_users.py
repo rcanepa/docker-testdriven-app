@@ -22,7 +22,8 @@ class TestUserService(BaseTestCase):
                 '/users',
                 data=json.dumps({
                     'username': 'rcanepa',
-                    'email': 'rcanepa@rc.com'
+                    'email': 'rcanepa@rc.com',
+                    'password': 'password'
                 }),
                 content_type='application/json',
             )
@@ -65,7 +66,8 @@ class TestUserService(BaseTestCase):
                 '/users',
                 data=json.dumps({
                     'username': 'rcanepa',
-                    'email': 'rcanepa@rc.com'
+                    'email': 'rcanepa@rc.com',
+                    'password': 'password'
                 }),
                 content_type='application/json'
             )
@@ -74,7 +76,8 @@ class TestUserService(BaseTestCase):
                 '/users',
                 data=json.dumps({
                     'username': 'rcanepa',
-                    'email': 'rcanepa@rc.com'
+                    'email': 'rcanepa@rc.com',
+                    'password': 'password'
                 }),
                 content_type='application/json'
             )
@@ -86,7 +89,11 @@ class TestUserService(BaseTestCase):
 
     def test_get_single_user(self):
         """Ensure get single user behaves correctly."""
-        user = add_user(username='rcanepa', email='rcanepa@rc.com')
+        user = add_user(
+            username='rcanepa',
+            email='rcanepa@rc.com',
+            password='password'
+        )
         with self.client:
             response = self.client.get(f'/users/{user.id}')
             data = json.loads(response.data.decode())
@@ -114,8 +121,8 @@ class TestUserService(BaseTestCase):
             self.assertIn('fail', data['status'])
 
     def test_all_users(self):
-        add_user(username='rcanepa', email='rc@cc1.com')
-        add_user(username='acanepa', email='ac@cc1.com')
+        add_user(username='rcanepa', email='rc@cc1.com', password='password')
+        add_user(username='acanepa', email='ac@cc1.com', password='password')
         with self.client:
             response = self.client.get('/users')
             data = json.loads(response.data.decode())
@@ -136,8 +143,8 @@ class TestUserService(BaseTestCase):
         self.assertIn(b'<p>No users!</p>', response.data)
 
     def test_main_with_users(self):
-        add_user(username='rcanepa', email='rc@cc1.com')
-        add_user(username='acanepa', email='ac@cc1.com')
+        add_user(username='rcanepa', email='rc@cc1.com', password='password')
+        add_user(username='acanepa', email='ac@cc1.com', password='password')
         with self.client:
             response = self.client.get('/')
             self.assertEqual(response.status_code, 200)
@@ -151,13 +158,34 @@ class TestUserService(BaseTestCase):
         with self.client:
             response = self.client.post(
                 '/',
-                data=dict(username='rcanepa', email='rc@cc1.com'),
+                data=dict(
+                    username='rcanepa',
+                    email='rc@cc1.com',
+                    password='password'
+                ),
                 follow_redirects=True
             )
             self.assertEqual(response.status_code, 200)
             self.assertIn(b'<h1>All Users</h1>', response.data)
             self.assertNotIn(b'<p>No users!</p>', response.data)
             self.assertIn(b'rcanepa', response.data)
+
+    def test_add_user_invalid_json_keys_no_password(self):
+        """Ensure error is thrown if the JSON object does not
+        have a password key."""
+        with self.client:
+            response = self.client.post(
+                '/users',
+                data=json.dumps(dict(
+                    username='rcanepa',
+                    email='rcanepa@tt.com'
+                )),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 400)
+            self.assertIn('Invalid payload.', data['message'])
+            self.assertIn('fail', data['status'])
 
 
 if __name__ == "__main__":
