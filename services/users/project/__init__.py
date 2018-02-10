@@ -1,11 +1,15 @@
 import os
 from flask import Flask
 from flask_cors import CORS
+from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
 
 # instantiate the db
 db = SQLAlchemy()
+
+# instantiate flask migrate
+migrate = Migrate()
 
 
 def create_app():
@@ -21,6 +25,7 @@ def create_app():
 
     # set up extensions
     db.init_app(app)
+    migrate.init_app(app, db)
 
     # register blueprints
     from project.api.users import users_blueprint
