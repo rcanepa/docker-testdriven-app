@@ -2,8 +2,8 @@ version: '3.3'
 
 services:
 
-  users-service:
-    container_name: users-service
+  users:
+    container_name: users
     build:
       context: ./services/users
       dockerfile: Dockerfile-dev
@@ -39,10 +39,10 @@ services:
     ports:
       - 80:80
     depends_on:
-      - users-service
+      - users
       - client
     links:
-      - users-service
+      - users
 
   client:
     container_name: client
@@ -58,6 +58,6 @@ services:
       - REACT_APP_USERS_SERVICE_URL=${REACT_APP_USERS_SERVICE_URL}
       - CHOKIDAR_USEPOLLING=true
     depends_on:
-      - users-service
+      - users
     links:
-      - users-service
+      - users

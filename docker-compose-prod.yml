@@ -2,8 +2,8 @@ version: '3.3'
 
 services:
 
-  users-service:
-    container_name: users-service
+  users:
+    container_name: users
     build:
       context: ./services/users
       dockerfile: Dockerfile-prod
@@ -36,10 +36,10 @@ services:
     ports:
       - 80:80
     depends_on:
-      - users-service
+      - users
       - client
     links:
-      - users-service
+      - users
 
   client:
     container_name: client
@@ -52,6 +52,6 @@ services:
     ports:
       - '3007:3000'
     depends_on:
-      - users-service
+      - users
     links:
-      - users-service
+      - users
