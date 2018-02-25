@@ -24,6 +24,7 @@ class TestDevelopmentConfig(TestCase):
             app.config['SQLALCHEMY_DATABASE_URI'],
             os.environ.get('DATABASE_URL')
         )
+        self.assertTrue(app.config['DEBUG_TB_ENABLED'])
         self.assertTrue(app.config['BCRYPT_LOG_ROUNDS'] == 4)
         self.assertTrue(app.config['TOKEN_EXPIRATION_DAYS'] == 30)
         self.assertTrue(app.config['TOKEN_EXPIRATION_SECONDS'] == 0)
@@ -46,6 +47,7 @@ class TestTestingConfig(TestCase):
             app.config['SQLALCHEMY_DATABASE_URI'],
             os.environ.get('DATABASE_TEST_URL')
         )
+        self.assertFalse(app.config['DEBUG_TB_ENABLED'])
         self.assertTrue(app.config['BCRYPT_LOG_ROUNDS'] == 4)
         self.assertTrue(app.config['TOKEN_EXPIRATION_DAYS'] == 0)
         self.assertTrue(app.config['TOKEN_EXPIRATION_SECONDS'] == 3)
@@ -63,6 +65,7 @@ class TestProductionConfig(TestCase):
         )
         self.assertFalse(app.config['DEBUG'])
         self.assertFalse(app.config['TESTING'])
+        self.assertFalse(app.config['DEBUG_TB_ENABLED'])
         self.assertTrue(app.config['BCRYPT_LOG_ROUNDS'] == 13)
         self.assertTrue(app.config['TOKEN_EXPIRATION_DAYS'] == 30)
         self.assertTrue(app.config['TOKEN_EXPIRATION_SECONDS'] == 0)
