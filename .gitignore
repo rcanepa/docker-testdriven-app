@@ -2,3 +2,5 @@ __pycache__
 env
 __snapshots__
 **/.idea
+*.swp
+**/services/users/htmlcov/

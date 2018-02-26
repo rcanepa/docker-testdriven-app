@@ -36,4 +36,7 @@ def create_app():
     app.register_blueprint(users_blueprint)
     app.register_blueprint(auth_blueprint)
 
+    # shell context for flask cli
+    app.shell_context_processor({'app': app, 'db': db})
+
     return app
